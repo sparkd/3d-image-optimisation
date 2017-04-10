@@ -1,6 +1,6 @@
 import os
 import sys
-from image_optim import ImageOptimAPI
+from imageoptim import ImageOptimAPI
 
 dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -14,12 +14,20 @@ FILES = [
 
 
 def main():
-  for fn in FILES:
-    print('Processing %s' % fn)
-    file_path = os.path.join(dir, 'src', fn)
-    api = ImageOptimAPI('zwwpvcxnbr');
-    img = api.image_from_file_path(file_path, {'size': '4096x2048'})
-    img.save(os.path.join(dir, 'output', fn))
+  api = ImageOptimAPI('zwwpvcxnbr');
+  src_dir = os.path.join(dir, 'src');
+  for fn in os.listdir(src_dir):
+    file_path = {
+      'src': os.path.join(src_dir, fn),
+      'output': os.path.join(dir, 'output', fn)
+    }
+    # If file does not exist, resize it
+    if(os.path.isfile(file_path['src'])):
+      print('File %s already exists - skipping' % fn)
+    else:
+      print('Optimising %s' % fn)
+      img = api.image_from_file_path(file_path['src'], {'size': '4096x2048'})
+      img.save(os.path.join(dir, 'output', fn))
 
 
 if __name__ == "__main__":
